@@ -1,9 +1,23 @@
 import { httpClient } from '@/services/http/client'
 import type { LoginCredentials, LoginResponse, User } from '../types/auth.types'
 
+const MOCK_USER: User = {
+  id: 'mock-user-1',
+  email: 'demo@example.com',
+  name: 'Usuario Demo',
+}
+
 export const authApi = {
   login: async (credentials: LoginCredentials): Promise<LoginResponse> => {
-    return httpClient.post<LoginResponse>('/auth/login', credentials)
+    await new Promise((r) => setTimeout(r, 300))
+    return {
+      token: 'mock-token-' + Date.now(),
+      user: {
+        ...MOCK_USER,
+        email: credentials.email || MOCK_USER.email,
+        name: credentials.email?.split('@')[0] || MOCK_USER.name,
+      },
+    }
   },
 
   logout: async (): Promise<void> => {
